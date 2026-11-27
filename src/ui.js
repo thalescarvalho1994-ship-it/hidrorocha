@@ -209,32 +209,37 @@
 
 
   function viewInicio() {
-    const r = R(), rep = store.reports.slice().sort((a, b) => b.atualizado - a.atualizado), cs = rep.map(x => HL.compute(x));
-    const totQ = cs.reduce((t, c) => t + (c.Q || 0), 0), totD = cs.reduce((t, c) => t + (c.Qdia || 0), 0);
-    const rows = rep.slice(0, 5).map(x => { const c = HL.compute(x), cls = c.god.classe;
-      return '<tr data-open="' + x.id + '"><td class="mono">' + esc(x.g.poco || '—') + '</td><td>' + esc(folderName(x.pasta) || x.g.interessado || '—') + '</td><td>' + esc(x.g.municipio ? x.g.municipio + (x.g.uf ? '-' + x.g.uf : '') : '—') + '</td><td>' + dateBR(x.g.dataLaudo) + '</td><td>' + (cls ? '<span class="pill ' + cls + '">' + cls.charAt(0) + cls.slice(1).toLowerCase() + '</span>' : '—') + '</td><td>' + statusPill(x.g.status) + '</td></tr>'; }).join('');
+    const r = R(), rep = store.reports.slice().sort((a, b) => b.atualizado - a.atualizado);
+    const rows = rep.slice(0, 6).map(x => '<tr data-open="' + x.id + '" title="' + esc(x.g.interessado || '') + '"><td><b>' + esc(x.g.poco || '—') + '</b></td><td>' + esc(folderName(x.pasta) || x.g.interessado || '—') + '</td><td>' + esc(x.g.municipio ? x.g.municipio + (x.g.uf ? '-' + x.g.uf : '') : '—') + '</td><td>' + dateBR(x.g.dataLaudo) + '</td><td>' + statusPill(stOf(x)) + '</td><td>' + pagtoPill(pgOf(x)) + '</td></tr>').join('');
+    // quadro de controle: quantos laudos em cada situação e quanto falta receber; cada linha abre Meus laudos já filtrado
+    const cnt = (f, k) => rep.filter(x => f(x) === k).length, totRec = rep.reduce((t, x) => t + aReceber(x), 0);
+    const linha = (kind, k, l, n) => '<button class="ctl-row" data-action="filtro:' + kind + ':' + k + '"' + (n ? '' : ' disabled') + '>' + (kind === 'st' ? statusPill(k) : pagtoPill(k)) + '<b>' + n + '</b></button>';
+    const controle = '<section class="card ctl"><h3>Controle dos laudos</h3>' +
+      '<div class="ctl-g"><div class="lab">Situação</div>' + STATUS.map(([k, l]) => linha('st', k, l, cnt(stOf, k))).join('') + '</div>' +
+      '<div class="ctl-g"><div class="lab">Pagamento</div>' + PAGTO.map(([k, l]) => linha('pg', k, l, cnt(pgOf, k))).join('') + '</div>' +
+      '<div class="ctl-tot"><span>A receber</span><b>' + reais(totRec) + '</b></div></section>';
     const sc = (cls, act, icon, t, sub) => '<button class="short' + cls + '" ' + act + '>' + ic(icon) + '<b>' + t + '</b><span>' + sub + '</span></button>';
     return '<div class="hero"><img class="scene" src="@@IMG_BANNER@@" alt=""><div class="ht"><img class="lg" src="@@IMG_LOGO@@" alt=""><div><div class="hn">WILTON ROCHA</div><div class="hs"><i></i>HIDROGEOLOGIA<i></i></div><div class="hi">Laudos de outorga, do teste ao relatório</div></div></div></div>' +
       '<div class="wrap"><div class="shorts">' +
-      sc(' pri', 'data-action="novo"', 'newdoc', 'Novo laudo', 'Começar um relatório') + sc('', 'data-action="importar"', 'upload', 'Importar teste', 'Ficha em PDF → laudo') + sc('', 'data-go="consultas"', 'folder', 'Meus laudos', 'Pastas por cliente') +
+      sc(' pri', 'data-action="novo"', 'newdoc', 'Novo laudo', 'Começar um relatório') + sc('', 'data-action="importar"', 'upload', 'Importar teste', 'Ficha em PDF ou leituras') + sc('', 'data-go="consultas"', 'folder', 'Meus laudos', 'Pastas por cliente') +
       sc('', 'data-go="dados"', 'drop', 'Laudo atual', esc(r.g.poco || 'Continuar editando')) + sc('', 'data-go="gerar"', 'down', 'Gerar relatório', 'Word e PDF') + '</div>' +
-      '<div class="hm"><section class="card rc"><div class="rh">' + ic('file') + 'Laudos recentes<a data-go="consultas">Ver todos ›</a></div><table><thead><tr><th>Poço</th><th>Cliente</th><th>Município</th><th>Laudo</th><th>Vulnerabilidade</th><th>Situação</th></tr></thead><tbody>' + (rows || '<tr><td colspan="6">Nenhum laudo ainda.</td></tr>') + '</tbody></table></section>' +
-      '<div><div class="bigstat"><div class="tile">' + ic('file') + '</div><div class="t"><b>Laudos salvos</b><small>' + store.folders.length + ' pasta(s) de clientes</small><div class="n">' + store.reports.length + '</div></div></div>' +
-      '<div class="bigstat"><div class="tile">' + ic('drop') + '</div><div class="t"><b>Vazão solicitada</b><small>Soma de todos os laudos</small><div class="n">' + fmt(totQ, totQ % 1 ? 2 : 0) + '<small> m³/h</small></div></div></div></div></div></div>';
+      '<div class="hm"><section class="card rc"><div class="rh">' + ic('file') + 'Laudos recentes<a data-go="consultas">Ver todos ›</a></div><table><thead><tr><th>Poço</th><th>Cliente</th><th>Município</th><th>Laudo</th><th>Situação</th><th>Pagamento</th></tr></thead><tbody>' + (rows || '<tr><td colspan="6">Nenhum laudo ainda.</td></tr>') + '</tbody></table></section>' +
+      '<div>' + controle + '</div></div></div>';
   }
 
   const VIEWS = {
     dados() {
       const r = R();
       return head('Dados gerais', 'Quem solicita, onde fica e quem assina. Estes dados alimentam a capa, a introdução e a conclusão.') +
-        card('Pasta e situação', 'A pasta organiza os laudos por cliente em Meus laudos.', '<div class="grid">' +
-          fld('pasta', 'Pasta do cliente', { span: 5, type: 'select', options: [['', 'Sem pasta']].concat(store.folders.map(f => [f.id, f.nome])) }) +
-          '<div class="f s3"><span class="lab">&nbsp;</span><button class="btn" data-action="pastaInt">' + ic('folder') + 'Pasta com o nome do interessado</button></div>' +
-          fld('g.status', 'Situação do laudo', { span: 4, type: 'select', options: STATUS }) + '</div>') +
+        card('Pasta, situação e pagamento', 'Controle interno: aparece em Meus laudos e no Início, nunca no laudo impresso.', '<div class="grid">' +
+          fld('pasta', 'Pasta do cliente', { span: 8, type: 'select', options: [['', 'Sem pasta']].concat(store.folders.map(f => [f.id, f.nome])) }) +
+          '<div class="f s4"><span class="lab">&nbsp;</span><button class="btn" data-action="pastaInt">' + ic('folder') + 'Criar pasta do cliente</button></div>' +
+          fld('g.status', 'Situação do laudo', { span: 3, type: 'select', options: STATUS }) + fld('g.pagamento', 'Pagamento', { span: 3, type: 'select', options: PAGTO }) +
+          fld('g.valor', 'Valor do serviço', { span: 3, dec: 1, suf: 'R$', ph: '0,00' }) + fld('g.recebido', 'Já recebido', { span: 3, dec: 1, suf: 'R$', ph: '0,00' }) + '</div>') +
         card('Interessado e local', 'O gênero é usado para escrever “do Colégio” ou “da Fazenda” corretamente em todo o texto.',
           '<div class="grid">' + fld('g.interessado', 'Interessado (proprietário)', { span: 8 }) + fld('g.artInt', 'Gênero do interessado', { span: 4, type: 'select', options: GEN }) +
           fld('g.local', 'Nome do local', { span: 8, ph: 'ex.: Colégio Madre Valdelícia' }) + fld('g.artLocal', 'Gênero do local', { span: 4, type: 'select', options: GEN }) +
-          fld('g.poco', 'Código do poço', { span: 3, ph: 'CMV-01' }) + fld('g.municipio', 'Município', { span: 5 }) + fld('g.uf', 'UF', { span: 2, max: 2 }) + fld('g.dataLaudo', 'Data do laudo', { span: 2, type: 'date' }) + '</div>') +
+          fld('g.poco', 'Código do poço', { span: 3, ph: 'CMV-01' }) + fld('g.municipio', 'Município', { span: 4 }) + fld('g.uf', 'UF', { span: 2, max: 2 }) + fld('g.dataLaudo', 'Data do laudo', { span: 3, type: 'date' }) + '</div>') +
         card('Registro e processo', null,
           '<div class="grid">' + fld('g.art', 'Número da ART', { span: 4 }) + fld('g.finalidade', 'Finalidade do uso', { span: 8 }) +
           fld('g.formulario', 'Formulário da demanda', { span: 3 }) + fld('g.formsAnexos', 'Formulários anexos', { span: 5 }) + fld('g.orgao', 'Órgão outorgante', { span: 4 }) + '</div>') +
@@ -266,7 +271,7 @@
         '<tr class="sumrow"><td class="ro">Média</td><td class="out">' + out('?metodos.' + m + '.Tm|s3') + '</td><td class="out">' + out('?metodos.' + m + '.Km|s3') + '</td><td class="out">' + out('?metodos.' + m + '.Em|2') + '</td><td></td></tr>').join('') +
         '<tr class="sumrow geral"><td class="ro">Média geral</td><td class="out">' + out('?geral.Tm|s3') + '</td><td class="out">' + out('?geral.Km|s3') + '</td><td class="out">' + out('?geral.Em|2') + '</td><td></td></tr>';
       return head('Poço e teste de bombeamento', 'Construção do poço e os resultados do teste escalonado (Quadros 01 e 02 do laudo).') +
-        '<section class="card" id="cardImp"><h3>' + ic('down') + ' Importar ficha do teste de bombeamento</h3><div class="sub">Envie o PDF da ficha (modelo GEOTECH). O app lê o cabeçalho e as leituras de cada etapa, preenche o laudo e calcula T por Jacob, Theis e Hantush. Você confere antes de aplicar.</div>' +
+        '<section class="card" id="cardImp"><h3>' + ic('down') + ' Importar ficha do teste de bombeamento</h3><div class="sub">Envie o PDF da ficha: modelo GEOTECH ou tabela TEMPO | ND | VAZÃO (teste de vazão máxima de outras empresas). O app lê o cabeçalho e as leituras de cada etapa, preenche o laudo e calcula T por Jacob, Theis e Hantush. Você confere antes de aplicar.</div>' +
         '<label class="drop" for="upTeste" id="dropTeste">' + ic('file') + '<b>Arraste o PDF aqui ou clique para escolher</b><span>Aceita .pdf (ficha com texto) e .txt/.csv com as mesmas colunas</span></label><input id="upTeste" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain" hidden>' +
         '<details class="manual"><summary>Ficha escaneada (foto) ou de outra empresa? Digite ou cole as leituras</summary>' +
         '<p class="note">Uma leitura por linha: <b>tempo</b> e <b>nível dinâmico</b>, e, se quiser, a <b>vazão</b> na terceira coluna. O tempo pode ser em minutos (30) ou em h:mm (4:15 = 4 h 15 min). Para teste escalonado, escreva “Etapa 2” numa linha antes das leituras da 2ª etapa. Dá para colar direto do Excel.</p>' +
@@ -376,26 +381,31 @@
   const hhmm = min => min ? String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(Math.round(min % 60)).padStart(2, '0') : '';
   const MET = [['theis', 'Theis'], ['jacob', 'Jacob'], ['hantush', 'Hantush']];
   async function readFicha(file) {
-    let pages;
+    let pages, f = null;
     if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') {
       if (!window.pdfjsLib) throw new Error('leitor de PDF não carregou');
       const doc = await window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      pages = [];
-      for (let i = 1; i <= doc.numPages; i++) pages.push(HL.pdfLines((await (await doc.getPage(i)).getTextContent()).items));
+      const items = [];
+      for (let i = 1; i <= doc.numPages; i++) items.push((await (await doc.getPage(i)).getTextContent()).items);
+      f = HL.parseTabela(items); // fichas TEMPO | ND | VAZÃO de outras empresas; senão, modelo GEOTECH
+      pages = items.map(HL.pdfLines);
     } else { // texto: separa as etapas onde aparecer "ETAPA:"
       const lines = (await file.text()).split(/\r?\n/).map(l => l.replace(/[;\t]/g, ' '));
       pages = [[]]; lines.forEach(l => { if (/ETAPA\s*:/i.test(l) && pages[pages.length - 1].some(x => /\d,\d/.test(x))) pages.push([]); pages[pages.length - 1].push(l); });
     }
-    const f = HL.parseFicha(pages);
+    if (!f) f = HL.parseFicha(pages);
     if (!f || !f.etapas.some(e => e.pts.length)) throw new Error('não encontrei as leituras de tempo e nível');
     return f;
   }
   function buildImport(f, fileName) {
     const m = f.meta, r = R();
-    const bomba = [m.marca ? 'marca ' + m.marca : '', m.modelo ? 'modelo ' + m.modelo : '', m.potencia ? 'de ' + br(m.potencia, m.potencia % 1 ? 1 : 0) + ' CV' : ''].filter(Boolean).join(' ');
+    const bomba = m.bomba || [m.marca ? 'marca ' + m.marca : '', m.modelo ? 'modelo ' + m.modelo : '', m.potencia ? 'de ' + br(m.potencia, m.potencia % 1 ? 1 : 0) + ' CV' : ''].filter(Boolean).join(' ');
+    const co = m.coords || {};
     const aq = m.aquifero ? (/^aqu[ií]fero/i.test(m.aquifero) ? m.aquifero : 'Aquífero ' + m.aquifero) : '';
     const fields = [
-      ['g.poco', 'Código do poço', m.poco], ['g.local', 'Local', m.local], ['g.municipio', 'Município', m.municipio], ['g.uf', 'UF', m.uf],
+      ['g.interessado', 'Interessado (cliente)', m.cliente], ['g.poco', 'Código do poço', m.poco], ['g.local', 'Local', m.local],
+      ['loc.latG', 'Latitude (graus)', co.latG], ['loc.latM', 'Latitude (min)', co.latM], ['loc.latS', 'Latitude (seg)', co.latS], ['loc.latHem', 'Latitude (hemisfério)', co.latHem],
+      ['loc.lonG', 'Longitude (graus)', co.lonG], ['loc.lonM', 'Longitude (min)', co.lonM], ['loc.lonS', 'Longitude (seg)', co.lonS], ['loc.lonHem', 'Longitude (hemisfério)', co.lonHem], ['g.municipio', 'Município', m.municipio], ['g.uf', 'UF', m.uf],
       ['poco.profUtil', 'Profundidade útil (m)', br(m.prof, 2)], ['hid.P', 'Profundidade do poço P (m)', br(m.prof, 2)], ['poco.diametro', 'Diâmetro', m.diametro ? m.diametro + '”' : ''],
       ['poco.empresa', 'Empresa que testou', m.empresa], ['teste.data', 'Data do teste', m.data], ['teste.duracao', 'Duração por etapa', hhmm(m.tempo)],
       ['teste.bomba', 'Bomba', bomba], ['teste.aquifero', 'Aquífero', aq], ['hid.PB', 'Posição da bomba PB (m)', br(m.crivo, 2)], ['hid.NE', 'Nível estático NE (m)', br(m.NE, 3)]
@@ -513,31 +523,42 @@
   // ---------- painel lateral ao vivo ----------
   function liveHtml() {
     const c = C(), r = R(), p = pending(r);
-    const S = (k, spec, unit, hi) => '<div class="stat' + (hi ? ' hi' : '') + '"><div class="k">' + k + '</div><div class="v">' + out(spec) + '<small>' + unit + '</small></div></div>';
-    return '<h3>Resumo ao vivo</h3><div class="stats">' + S('Rd', 'Rd|2', 'm', 1) + S('Qmpo', 'Qmpo|2', 'm³/h', 1) + S('Sw', 'Sw|2', 'm') + S('ND', 'ND|2', 'm') + S('Cap. esp.', 'qesp|2', 'm³/h/m') + S('Raio máx.', 'rmax|0', 'm') + '</div>' +
+    const S = (k, spec, unit, st) => '<div class="stat' + (st ? ' ' + st[0] : '') + '"><div class="k">' + k + '</div><div class="v">' + out(spec) + '<small>' + unit + '</small></div>' + (st ? '<div class="s">' + ic(st[0] === 'ok' ? 'check' : 'warn') + st[1] + '</div>' : '') + '</div>';
+    const has = v => v !== null && v !== undefined && isFinite(v);
+    const stRd = has(c.Rd) && has(c.Sw) ? (c.Sw <= c.Rd ? ['ok', 'Cobre o Sw'] : ['bad', 'Menor que o Sw']) : null;
+    const stQ = has(c.Qmpo) && has(c.Q) ? (c.Q <= c.Qmpo ? ['ok', 'Cobre a vazão'] : ['bad', 'Menor que a vazão']) : null;
+    return '<h3>Resumo ao vivo</h3><div class="stats">' + S('Rd', 'Rd|2', 'm', stRd) + S('Qmpo', 'Qmpo|2', 'm³/h', stQ) + S('Sw', 'Sw|2', 'm') + S('ND', 'ND|2', 'm') + S('Cap. esp.', 'qesp|2', 'm³/h/m') + S('Raio máx.', 'rmax|0', 'm') + '</div>' +
       '<div style="margin:14px 0 6px"><span class="lab">Vulnerabilidade GOD</span></div><div id="livePill">' + pillHtml(c) + ' <span class="mono" style="margin-left:6px">' + out('god.idx|2') + '</span></div>' +
       '<div id="liveWarn" style="margin-top:12px">' + warnsHtml() + '</div>' +
       '<div style="margin-top:14px" class="lab">' + (p.length ? p.length + ' campo(s) em branco' : 'Tudo preenchido') + '</div>';
   }
 
   // ---------- consultas ----------
-  let q = { text: '', mun: '', sort: 'recent', folder: '' };
-  const STATUS = [['rascunho', 'Rascunho'], ['revisao', 'Em revisão'], ['concluido', 'Concluído']];
-  const statusPill = s => { const x = STATUS.find(y => y[0] === s) || STATUS[0]; return '<span class="st ' + x[0] + '">' + x[1] + '</span>'; };
+  let q = { text: '', mun: '', sort: 'recent', folder: '', st: '', pg: '' };
+  // situação do laudo ('rascunho' é a chave antiga de "Em elaboração") e do pagamento: pílula com marcador e texto
+  const STATUS = [['pendente', 'Pendente'], ['rascunho', 'Em elaboração'], ['revisao', 'Em revisão'], ['concluido', 'Concluído'], ['entregue', 'Entregue']];
+  const PAGTO = [['nao', 'Não recebido'], ['parcial', 'Recebido em parte'], ['pago', 'Pago']];
+  const statusPill = s => { const x = STATUS.find(y => y[0] === s) || STATUS[1]; return '<span class="st ' + x[0] + '">' + x[1] + '</span>'; };
+  const pagtoPill = s => { const x = PAGTO.find(y => y[0] === s) || PAGTO[0]; return '<span class="st pg-' + x[0] + '">' + x[1] + '</span>'; };
+  const stOf = r => STATUS.some(y => y[0] === r.g.status) ? r.g.status : 'rascunho', pgOf = r => PAGTO.some(y => y[0] === r.g.pagamento) ? r.g.pagamento : 'nao';
+  const aReceber = r => { const v = HL.num(r.g.valor) || 0, rec = HL.num(r.g.recebido) || 0; return pgOf(r) === 'pago' ? 0 : Math.max(0, v - (pgOf(r) === 'parcial' ? rec : 0)); };
+  const reais = v => 'R$ ' + fmt(v, 2);
   const folderName = id => { const f = store.folders.find(x => x.id === id); return f ? f.nome : ''; };
   function listItems() {
     let list = store.reports.slice();
     const t = q.text.trim().toLowerCase();
     if (t) list = list.filter(r => [r.g.poco, r.g.local, r.g.interessado, r.g.municipio, r.g.art, folderName(r.pasta)].join(' ').toLowerCase().includes(t));
     if (q.mun) list = list.filter(r => r.g.municipio === q.mun);
+    if (q.st) list = list.filter(r => stOf(r) === q.st);
+    if (q.pg) list = list.filter(r => pgOf(r) === q.pg);
     if (q.folder === '_sem') list = list.filter(r => !r.pasta || !folderName(r.pasta)); else if (q.folder) list = list.filter(r => r.pasta === q.folder);
     list.sort((a, b) => q.sort === 'poco' ? (a.g.poco || '').localeCompare(b.g.poco || '') : q.sort === 'mun' ? (a.g.municipio || '').localeCompare(b.g.municipio || '') : b.atualizado - a.atualizado);
     const fopts = r => '<option value="">Sem pasta</option>' + store.folders.map(f => '<option value="' + f.id + '"' + (r.pasta === f.id ? ' selected' : '') + '>' + esc(f.nome) + '</option>').join('');
     return list.map(r => {
       const c = HL.compute(r), cls = c.god.classe;
       return '<div class="item' + (r.id === store.current ? ' cur2' : '') + '" data-open="' + r.id + '" tabindex="0" role="button" aria-label="Abrir ' + esc(r.nome || r.g.poco) + '">' +
-        '<div><div class="t">' + esc(r.g.poco || 'Sem código') + (r.exemplo ? '<span class="tag">exemplo</span>' : '') + ' ' + statusPill(r.g.status) + '</div><div class="d">' + esc(r.g.local || '—') + '</div><div class="d">' + esc(r.g.interessado || '') + '</div></div>' +
-        '<div><div class="k">Município</div><div>' + esc(r.g.municipio ? r.g.municipio + (r.g.uf ? '-' + r.g.uf : '') : '—') + '</div><div class="d">Laudo: ' + dateBR(r.g.dataLaudo) + '</div></div>' +
+        '<div><div class="t">' + esc(r.g.poco || 'Sem código') + (r.exemplo ? '<span class="tag">exemplo</span>' : '') + '</div><div class="d">' + esc(r.g.local || '—') + '</div><div class="d">' + esc(r.g.interessado || '') + '</div><div class="sts">' + statusPill(stOf(r)) + pagtoPill(pgOf(r)) + (aReceber(r) ? '<small>' + reais(aReceber(r)) + ' a receber</small>' : '') + '</div></div>' +
+        '<div><div class="k">Município</div><div>' + esc(r.g.municipio ? r.g.municipio + (r.g.uf ? '-' + r.g.uf : '') : '—') + '</div><div class="d">' + dateBR(r.g.dataLaudo) + '</div></div>' +
         '<div><div class="k">Vazão solicitada</div><div class="mono">' + (c.Q !== null && c.Q !== undefined ? fmt(c.Q, 2) + ' m³/h' : '—') + '</div><div class="d mono">' + (c.Qdia !== null && c.Qdia !== undefined ? fmt(c.Qdia, 0) + ' m³/dia' : '') + '</div></div>' +
         '<div><div class="k">Vulnerabilidade</div>' + (cls ? '<span class="pill ' + cls + '">' + cls.charAt(0) + cls.slice(1).toLowerCase() + '</span>' : '—') + '</div>' +
         '<div class="acts"><label class="mv"><span class="k">Pasta</span><select data-move="' + r.id + '" aria-label="Mover para a pasta">' + fopts(r) + '</select></label><div class="row"><button class="btn sm" data-dup="' + r.id + '">Duplicar</button><button class="btn sm danger" data-del="' + r.id + '">Excluir</button></div></div></div>';
@@ -548,7 +569,7 @@
     const b = (id, nome, extra) => '<button class="fold' + (q.folder === id ? ' on' : '') + '" data-action="pasta:' + id + '">' + ic(id === '' ? 'layers' : 'folder') + '<span>' + esc(nome) + '</span><b>' + cnt(id) + '</b></button>' + (extra || '');
     const cur = store.folders.find(f => f.id === q.folder);
     return '<aside class="folders"><div class="lab">Pastas por cliente</div>' + b('', 'Todos os laudos') + store.folders.slice().sort((a, c) => a.nome.localeCompare(c.nome)).map(f => b(f.id, f.nome)).join('') + b('_sem', 'Sem pasta') +
-      '<div class="newf"><input id="novaPasta" placeholder="Nova pasta (nome do cliente)" aria-label="Nome da nova pasta"><button class="btn sm" data-action="novaPasta">' + ic('plus') + 'Criar</button></div>' +
+      '<div class="newf"><input id="novaPasta" placeholder="Nome do cliente" aria-label="Nome da nova pasta"><button class="btn sm" data-action="novaPasta">' + ic('plus') + 'Criar</button></div>' +
       (cur ? '<div class="row" style="margin-top:8px"><button class="btn sm ghost" data-action="renPasta:' + cur.id + '">Renomear</button><button class="btn sm ghost danger" data-action="delPasta:' + cur.id + '">Excluir pasta</button></div>' : '') + '</aside>';
   }
   function viewConsultas() {
@@ -556,8 +577,10 @@
     const items = listItems(), fn = q.folder === '_sem' ? 'Sem pasta' : folderName(q.folder);
     return head('Meus laudos', 'Organize os laudos em pastas por cliente. Clique num laudo para abrir; mude a pasta pela lista de cada um.') +
       '<div class="lay2">' + folderNav() + '<div>' +
-      '<div class="toolbar"><input class="search" id="qText" type="search" placeholder="Buscar por poço, local, interessado, município, ART ou pasta" value="' + esc(q.text) + '" aria-label="Buscar laudos">' +
+      '<div class="toolbar"><input class="search" id="qText" type="search" placeholder="Buscar poço, cliente ou município" value="' + esc(q.text) + '" aria-label="Buscar laudos">' +
       '<select id="qMun" aria-label="Município"><option value="">Todos os municípios</option>' + muns.map(m => '<option' + (m === q.mun ? ' selected' : '') + '>' + esc(m) + '</option>').join('') + '</select>' +
+      '<select id="qSt" aria-label="Situação do laudo"><option value="">Todas as situações</option>' + STATUS.map(([k, l]) => '<option value="' + k + '"' + (q.st === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
+      '<select id="qPg" aria-label="Pagamento"><option value="">Todos os pagamentos</option>' + PAGTO.map(([k, l]) => '<option value="' + k + '"' + (q.pg === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
       '<select id="qSort" aria-label="Ordenar"><option value="recent"' + (q.sort === 'recent' ? ' selected' : '') + '>Mais recentes</option><option value="poco"' + (q.sort === 'poco' ? ' selected' : '') + '>Código do poço</option><option value="mun"' + (q.sort === 'mun' ? ' selected' : '') + '>Município</option></select>' +
       '<span style="flex:1"></span><button class="btn pri" data-action="novo">' + ic('plus') + (fn && q.folder !== '_sem' ? 'Novo laudo em “' + esc(fn) + '”' : 'Novo laudo') + '</button></div>' +
       '<div class="list" id="listR">' + (items || '<div class="empty">Nenhum laudo aqui. Ajuste a busca ou crie um novo laudo.</div>') + '</div></div></div>' +
@@ -752,6 +775,7 @@
         let f = store.folders.find(x => x.nome.toLowerCase() === nome.toLowerCase()); if (!f) { f = { id: 'p' + Date.now().toString(36), nome }; store.folders.push(f); }
         r.pasta = f.id; touch(); persist(true); render(); toast('Laudo guardado na pasta “' + f.nome + '”.'); break; }
       case 'pasta': q.folder = arg || ''; refreshList(true); break;
+      case 'filtro': { const k = t.dataset.action.split(':'); q = { text: '', mun: '', sort: 'recent', folder: '', st: k[1] === 'st' ? k[2] : '', pg: k[1] === 'pg' ? k[2] : '' }; go('consultas'); break; }
       case 'renPasta': { const f = store.folders.find(x => x.id === arg); const nome = f && window.prompt('Novo nome da pasta:', f.nome); if (nome && nome.trim()) { f.nome = nome.trim(); persist(true); render(); } break; }
       case 'delPasta': { const f = store.folders.find(x => x.id === arg); if (!f) break;
         if (t.dataset.arm !== '1') { t.dataset.arm = '1'; t.textContent = 'Confirmar?'; setTimeout(() => { if (t.isConnected) { t.dataset.arm = ''; t.textContent = 'Excluir pasta'; } }, 3000); break; }
@@ -884,6 +908,8 @@
       if (e.target.type === 'file') onFile(e);
       else if (e.target.id === 'qMun') { q.mun = e.target.value; refreshList(); }
       else if (e.target.id === 'qSort') { q.sort = e.target.value; refreshList(); }
+      else if (e.target.id === 'qSt') { q.st = e.target.value; refreshList(); }
+      else if (e.target.id === 'qPg') { q.pg = e.target.value; refreshList(); }
       else if (d.move) { const r = store.reports.find(x => x.id === d.move); if (r) { r.pasta = e.target.value; persist(true); refreshList(true); toast(e.target.value ? 'Laudo movido para “' + folderName(e.target.value) + '”.' : 'Laudo sem pasta.'); } }
       else if (d.impf !== undefined) { if (imp) imp.fields[+d.impf].on = e.target.checked; }
       else if (d.impm) { if (imp) imp.use[d.impm] = e.target.checked; }

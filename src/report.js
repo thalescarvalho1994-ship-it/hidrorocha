@@ -93,7 +93,7 @@
     return {
       id: uid(), criado: Date.now(), atualizado: Date.now(),
       g: { interessado: '', artInt: 'o', local: '', artLocal: 'o', poco: '', municipio: '', uf: 'AL', dataLaudo: '', art: '', finalidade: 'Abastecimento Humano e Outras finalidades',
-        formulario: 'F-06', formsAnexos: 'F-01, F-03, F-05 e F-06', orgao: 'SEMARH', status: 'rascunho',
+        formulario: 'F-06', formsAnexos: 'F-01, F-03, F-05 e F-06', orgao: 'SEMARH', status: 'rascunho', pagamento: 'nao', valor: '', recebido: '',
         respNome: 'Wilton José Silva da Rocha', respTitulo: 'Hidrogeólogo', respRegistro: 'CONFEA 180617525-8' },
       loc: { prep: 'na', endereco: '', bairro: '', acesso: '', latG: '', latM: '', latS: '', latHem: 'Sul', lonG: '', lonM: '', lonS: '', lonHem: 'Oeste' },
       poco: { profUtil: '', diametro: '4”', revestimento: 'PVC geomecânico aditivado', empresa: '', sedeEmpresa: '' },

@@ -7,6 +7,8 @@ Uso alvo: **notebook/desktop**. O usuário fala português; interface, textos e 
 ## Estado atual (rodada 2 de melhorias, nov/2026)
 - Abas: Início, Meus laudos (pastas por cliente), Tabelas de apoio, Configurações, Dados gerais, Localização, Poço e teste, Geologia, Cálculos, Demanda e interferência, Vulnerabilidade, Qualidade da água, Textos-base, Gerar relatório. Painel "Resumo ao vivo" à direita.
 - **Importar ficha do teste** (aba Poço e teste / atalho no Início): PDF da GEOTECH lido com pdf.js (`src/teste.js` `pdfLines` + `parseFicha`), análise por etapa (Jacob, Theis, Hantush, `analisarTeste`), tela de conferência com caixas de seleção antes de aplicar. Também aceita .txt/.csv.
+- **Fichas em tabela de outras empresas** (teste de vazão máxima: Bueno e Cia/Benilton, Loteamento Jardins/Cicero Macena): `HL.parseTabela(itensPorPágina)` lê pela posição das colunas TEMPO | ND | VAZÃO (blocos lado a lado, h:mm, aspas = mesma vazão, horário de relógio e recuperação ignorados) e o cabeçalho por rótulos (`LBL`). Tentada antes do modelo GEOTECH (que usa colunas "t ND Sw Q"). Teste: `node test_tabela.js "ficha.pdf"`; ver texto cru: `node dump_pdf.js "ficha.pdf"`.
+- **Controle de situação**: `g.status` (pendente, rascunho = "Em elaboração", revisao, concluido, entregue), `g.pagamento` (nao, parcial, pago), `g.valor`, `g.recebido`. Pílulas com marcador vazio/meio/cheio; filtros em Meus laudos; quadro "Controle dos laudos" no Início com total a receber. Não sai no laudo.
 - **Fichas escaneadas** (foto, ex.: WX Poços, poço MBR-05): caixa "Digite ou cole as leituras" na importação (`HL.parseLeituras`): tempo em min ou h:mm, ND, vazão opcional; L/h com milhar ("2.500"); "Etapa N" separa etapas. Sem OCR de propósito (erro em tabela escaneada estraga o laudo). Teste de etapa única ajusta os textos (`tipoTeste`, `escalonado`).
 - **Ctrl+V** de tabelas (Quadro 01, coluna T do Quadro 02, litoestratigrafia, campos em sequência) e de coordenadas inteiras (`09°35'05,58"S 35°45'52,94"W`).
 - Quadro 02: K = T ÷ espessura (automático), média por método e **média geral = média das médias** (confere com JCC-01). Sem dado = célula em branco.
@@ -30,6 +32,7 @@ Uso alvo: **notebook/desktop**. O usuário fala português; interface, textos e 
 ## Decisões do geólogo
 - Divergências numéricas do laudo JCC-01 eram erros do documento: **seguir sempre as fórmulas (doutrina)**, nunca copiar números de laudos antigos. Detalhes na skill.
 - Qualidade da água aceita um ou dois certificados (físico-química e bacteriológica).
+- Revisão visual (skill frontend-design, nov/2026): sem rótulos em CAIXA ALTA espaçada; números dos resumos em Plex Sans tabular (mono só em campos de digitação); Rd e Qmpo no resumo ao vivo mostram estado com ícone e texto ("Cobre o Sw" / "Menor que o Sw"); rodapé ilustrado do menu encolhe em telas baixas para não esconder "Gerar relatório". Capturas: `node shots.js [pasta] [abas]`.
 - Ícones: SVG de linha no próprio código (não gerar no ChatGPT). Imagens: banner, logo e rodapé do menu (`assets/sidebar.webp`, recortado de `assets/sidebar_original.jpg`).
 ## Próximos passos sugeridos
 - Ler fichas de outras empresas (mandar exemplos) e planilhas .xlsx.

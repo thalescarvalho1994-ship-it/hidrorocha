@@ -98,6 +98,102 @@
     return { meta: { NE: o.NE }, etapas: ok };
   }
 
+  // ---------- fichas em tabela com colunas TEMPO | ND | VAZÃO (teste de vazão máxima, outras empresas) ----------
+  // Lidas pela posição das colunas na página: há blocos lado a lado (continuação do tempo), horários de
+  // relógio soltos, aspas (") repetindo a vazão e a recuperação à direita, que é ignorada.
+  function itemRows(items) {
+    const its = items.filter(i => i.str && i.str.trim()).map(i => ({ s: i.str.trim(), raw: i.str, x: i.transform[4], y: i.transform[5], w: i.width || 0, h: Math.abs(i.transform[3]) || 8 }));
+    its.sort((a, b) => b.y - a.y || a.x - b.x);
+    const rows = [];
+    its.forEach(it => { const r = rows.find(r => Math.abs(r.y - it.y) <= Math.max(2.5, it.h * 0.45)); if (r) r.items.push(it); else rows.push({ y: it.y, items: [it] }); });
+    rows.sort((a, b) => b.y - a.y);
+    rows.forEach(r => r.items.sort((a, b) => a.x - b.x));
+    return rows;
+  }
+  // Junta pedaços colados ("D" + "ilma" = "Dilma"): espaço só onde há folga entre os itens.
+  function smartLine(its) {
+    let s = '', end = null;
+    its.forEach(i => { if (end !== null) s += (i.x - end > 1 || /^\s/.test(i.raw) || /\s$/.test(s)) ? ' ' : ''; s += i.raw; end = i.x + i.w; });
+    return s.replace(/\s+/g, ' ').trim();
+  }
+  const LBL = /(?<![\wÀ-ú.])(Cliente|Propriet[aá]rio|Bombeamento|Tubo Edutor|Prof\.? ?d[aeo] Bomba(?: \(m\))?|Prof\.? ?d[aeo] Po[çc]o(?: \(m\))?|Profundidade do Po[çc]o(?: \(m\))?|Po[çc]o|Localiza[çc][aã]o|Local|In[ií]cio(?: do teste)?|Hora|Munic[ií]pio|T[eé]rmino\.?(?: teste)?|Estado|NE(?: \(m\))?|ND(?: \(m\))?|Vaz[aã]o|Q \(m³\/h\)|q \(m³\/h\/m\)|s \(m\)|Latitude Longitude|Rebaixamento|Cap\.? ?Espec[ií]fica|Bomba|ø|Executado|Realizado por)\s*[:=]/gi;
+  function labels(line) {
+    const ms = []; let m; LBL.lastIndex = 0;
+    while ((m = LBL.exec(line))) ms.push({ k: /^q \(/.test(m[1]) ? 'CAPESP' : norm(m[1]).replace(/\s*\(.*\)/, '').replace(/\.$/, ''), i: m.index, e: m.index + m[0].length });
+    const out = { pre: (ms.length ? line.slice(0, ms[0].i) : line).trim() };
+    ms.forEach((x, j) => { const v = line.slice(x.e, j + 1 < ms.length ? ms[j + 1].i : line.length).trim(); if (!(x.k in out) || (!out[x.k] && v)) out[x.k] = v; });
+    return out;
+  }
+  const firstNum = s => { const m = /\d[\d.]*,\d+|\d+(?:\.\d+)?/.exec(String(s || '').replace(/^\([^)]*\)\s*=?/, '')); return m ? num(m[0]) : null; };
+  const UFS = { ACRE: 'AC', ALAGOAS: 'AL', AMAPA: 'AP', AMAZONAS: 'AM', BAHIA: 'BA', CEARA: 'CE', 'DISTRITO FEDERAL': 'DF', 'ESPIRITO SANTO': 'ES', GOIAS: 'GO', MARANHAO: 'MA', 'MATO GROSSO': 'MT', 'MATO GROSSO DO SUL': 'MS', 'MINAS GERAIS': 'MG', PARA: 'PA', PARAIBA: 'PB', PARANA: 'PR', PERNAMBUCO: 'PE', PIAUI: 'PI', 'RIO DE JANEIRO': 'RJ', 'RIO GRANDE DO NORTE': 'RN', 'RIO GRANDE DO SUL': 'RS', RONDONIA: 'RO', RORAIMA: 'RR', 'SANTA CATARINA': 'SC', 'SAO PAULO': 'SP', SERGIPE: 'SE', TOCANTINS: 'TO' };
+  function coordsDe(s) {
+    const re = /(\d{1,3})\s*°\s*(\d{1,2})\s*['’′]\s*(\d{1,2}(?:[.,]\d+)?)\s*(?:["”″]|['’′]{2})?\s*([NSLOEW])?/gi, cs = []; let m;
+    while ((m = re.exec(s)) && cs.length < 2) cs.push(m);
+    if (cs.length < 2) return null;
+    const hem = (h, d) => !h ? d : /S/i.test(h) ? 'Sul' : /N/i.test(h) ? 'Norte' : /[OW]/i.test(h) ? 'Oeste' : 'Leste', o = {};
+    [['lat', cs[0], 'Sul'], ['lon', cs[1], 'Oeste']].forEach(([k, m, d]) => { o[k + 'G'] = m[1].padStart(2, '0'); o[k + 'M'] = m[2].padStart(2, '0'); o[k + 'S'] = m[3].replace('.', ','); o[k + 'Hem'] = hem(m[4], d); });
+    return o;
+  }
+  const isT = s => /^\d{1,2}:\d{2}$/.test(s), isN = s => /^\d+,\d+$/.test(s) || /^\d{1,3}(\.\d{3})*,\d+$/.test(s);
+  function parseTabelaPage(items) {
+    const rows = itemRows(items), lines = rows.map(r => smartLine(r.items));
+    const iReb = lines.findIndex(l => /^REBAIXAMENTO\b/i.test(norm(l)) || /\bREBAIXAMENTO\s+RECUPERA/i.test(norm(l)));
+    if (iReb < 0) return null;
+    // cabeçalho das colunas: das linhas logo abaixo de REBAIXAMENTO até a primeira linha com leituras
+    const cols = []; let i = iReb + 1;
+    for (; i < rows.length && i < iReb + 6; i++) {
+      if (rows[i].items.some(it => isT(it.s) || isN(it.s))) break;
+      rows[i].items.forEach(it => { const k = norm(it.s); if (/^(TEMPO|ND|NE|VAZAO|HORA)$/.test(k)) cols.push({ k, c: it.x + it.w / 2 }); });
+    }
+    if (!cols.some(c => c.k === 'TEMPO') || !cols.some(c => c.k === 'ND')) return null;
+    cols.sort((a, b) => a.c - b.c);
+    // blocos do rebaixamento: TEMPO seguido de ND (e VAZÃO); TEMPO seguido de NE é recuperação
+    const grupos = [];
+    cols.forEach((c, j) => { if (c.k !== 'TEMPO') return; const nx = cols.slice(j + 1).filter(x => x.k !== 'HORA'); if (nx[0] && nx[0].k === 'ND') grupos.push({ t: c, nd: nx[0], q: nx[1] && nx[1].k === 'VAZAO' ? nx[1] : null }); });
+    if (!grupos.length) return null;
+    const tbl = [];
+    for (; i < rows.length; i++) {
+      const cel = new Map();
+      rows[i].items.forEach(it => { if (!(isT(it.s) || isN(it.s) || it.s === '"' || it.s === '”')) return; let best = null, d = 1e9; cols.forEach(c => { const e = Math.abs(it.x + it.w / 2 - c.c); if (e < d) { d = e; best = c; } }); if (best && d < 26) cel.set(best, it.s); });
+      if (cel.size) tbl.push(cel);
+    }
+    const pts = []; let q = null, Qlast = null;
+    grupos.forEach(g => tbl.forEach(cel => {
+      const qs = g.q && cel.get(g.q); if (qs && isN(qs)) { q = numMil(qs); Qlast = q; }
+      const ts = cel.get(g.t), nds = cel.get(g.nd);
+      if (!ts || !isT(ts) || !nds || !isN(nds)) return;
+      const t = tempoMin(ts), nd = num(nds); if (t > 0 && nd !== null) pts.push([t, nd]);
+    }));
+    pts.sort((a, b) => a[0] - b[0]);
+    const L = {}; let cliente = '';
+    lines.slice(0, iReb).forEach((l, j) => {
+      const o = labels(l); Object.keys(o).forEach(k => { if (k !== 'pre' && !L[k]) L[k] = o[k]; });
+      if (j && labels(lines[j - 1]).CLIENTE !== undefined && o.pre && !cliente) cliente = o.pre; // nome do cliente que continua na linha de baixo
+    });
+    const exec = (/(?:EXECUTADO|REALIZADO POR)\s*:\s*(.+?)(?:\s+TEL\b|\s+ANOTA|$)/i.exec(lines.join(' ')) || [])[1] || '';
+    const dt = /(\d{2})\/(\d{2})\/(\d{4})/.exec(L['INICIO DO TESTE'] || L.INICIO || '');
+    const est = norm(L.ESTADO || '').replace(/\s/g, ' ').trim(), uf = est.replace(/\s/g, '').length === 2 ? est.replace(/\s/g, '') : (UFS[est] || '');
+    const pocoTxt = L.POCO || '';
+    const meta = {
+      cliente: [L.CLIENTE, cliente].filter(Boolean).join(' ').trim(), poco: /^[A-Z]{2,6}-?\d{1,3}$/i.test(pocoTxt) ? pocoTxt.toUpperCase() : '',
+      local: L.LOCALIZACAO || L.LOCAL || '', municipio: L.MUNICIPIO || '', uf,
+      data: dt ? dt[3] + '-' + dt[2] + '-' + dt[1] : null,
+      NE: firstNum(L.NE), prof: firstNum(L['PROF DO POCO'] || L['PROF. DO POCO'] || L['PROFUNDIDADE DO POCO']), crivo: firstNum(L['PROF DA BOMBA'] || L['PROF. DA BOMBA']),
+      diametro: (/(\d+(?:\s*\d\/\d)?)/.exec(L['Ø'] || '') || [])[1] || '',
+      bomba: L.BOMBA || (L.BOMBEAMENTO ? L.BOMBEAMENTO.replace(/\bCV\b.*/i, 'CV') : ''), executor: exec.trim(),
+      coords: coordsDe(L['LATITUDE LONGITUDE'] || ''), empresa: ''
+    };
+    const Qh = firstNum(L['Q'] || L.VAZAO);
+    const Q = Qlast !== null ? Qlast : Qh;
+    meta.tempo = pts.length ? pts[pts.length - 1][0] : null;
+    return { meta, etapas: pts.length ? [{ etapa: 1, NE: meta.NE, ND: pts[pts.length - 1][1], Q, tempo: meta.tempo, pts }] : [] };
+  }
+  // pagesItems: [[itens do pdf.js], ...] → mesmo formato de parseFicha, ou null se a ficha não é desse tipo
+  function parseTabela(pagesItems) {
+    for (const items of pagesItems) { const f = parseTabelaPage(items); if (f && f.etapas.length) return f; }
+    return null;
+  }
+
   // ---------- funções de poço ----------
   // W(u) de Theis = E1(u)
   function W(u) {
@@ -186,5 +282,5 @@
     return rows.map(r => r.items.sort((a, b) => a.x - b.x).map(i => i.s.trim()).join(' ').replace(/\s+/g, ' '));
   }
 
-  Object.assign(HL, { parseFicha, parseLeituras, numMil, analisarTeste, pdfLines, theisW: W, hantushW: Wh });
+  Object.assign(HL, { parseFicha, parseTabela, parseLeituras, numMil, analisarTeste, pdfLines, theisW: W, hantushW: Wh });
 })(typeof globalThis !== 'undefined' ? globalThis : window);
