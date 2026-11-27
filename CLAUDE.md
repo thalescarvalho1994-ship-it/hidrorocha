@@ -33,7 +33,9 @@ Uso alvo: **notebook/desktop**. O usuário fala português; interface, textos e 
 - Divergências numéricas do laudo JCC-01 eram erros do documento: **seguir sempre as fórmulas (doutrina)**, nunca copiar números de laudos antigos. Detalhes na skill.
 - Qualidade da água aceita um ou dois certificados (físico-química e bacteriológica).
 - Revisão visual (skill frontend-design, nov/2026): sem rótulos em CAIXA ALTA espaçada; números dos resumos em Plex Sans tabular (mono só em campos de digitação); Rd e Qmpo no resumo ao vivo mostram estado com ícone e texto ("Cobre o Sw" / "Menor que o Sw"); rodapé ilustrado do menu encolhe em telas baixas para não esconder "Gerar relatório". Capturas: `node shots.js [pasta] [abas]`.
-- Ícones: SVG de linha no próprio código (não gerar no ChatGPT). Imagens: banner, logo e rodapé do menu (`assets/sidebar.webp`, recortado de `assets/sidebar_original.jpg`).
+- Ícones ilustrados (nov/2026): duas folhas 4×2 geradas no ChatGPT em `assets/icones/folha-1.jpg` e `folha-2.webp`; `node cortar_icones.js` recorta, tira o fundo e grava `assets/icones/<nome>.webp` (160 px); o build embute em `ART` (ui.js). Usados nos atalhos do Início, ao lado do título de cada aba (`head`), no menu (24 px) e no quadro de controle. Botões e avisos continuam com SVG de linha (`ic`). Novo ícone: gerar no mesmo estilo, salvar como `assets/icones/<nome>.webp` e mapear em `ARTV`.
+- Envio ao GitHub: o usuário clica duas vezes em `Enviar para o GitHub.bat` (o auto mode bloqueia `git push` pelo Claude).
+- Ícones pequenos: SVG de linha no próprio código. Imagens: banner, logo e rodapé do menu (`assets/sidebar.webp`, recortado de `assets/sidebar_original.jpg`).
 ## Próximos passos sugeridos
 - Ler fichas de outras empresas (mandar exemplos) e planilhas .xlsx.
 - Perfil construtivo/litológico importado do relatório técnico.

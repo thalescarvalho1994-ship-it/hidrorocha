@@ -31,6 +31,10 @@
     upload: 'M12 21V9 M7 13l5-5 5 5 M5 3h14'
   };
   const ic = n => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICON[n] + '"/></svg>';
+  // ícones ilustrados (assets/icones, embutidos pelo build.js); por aba, nos atalhos e no menu
+  const ART = /*@@ICONES*/{};
+  const ARTV = { inicio: 'laudos', consultas: 'laudos', apoio: 'apoio', config: 'config', dados: 'dados', localizacao: 'localizacao', poco: 'poco', geologia: 'geologia', calculos: 'calculos', demanda: 'demanda', vulnerabilidade: 'vulnerabilidade', qualidade: 'qualidade', textos: 'textos', gerar: 'gerar' };
+  const art = (n, cls) => ART[n] ? '<img class="art' + (cls ? ' ' + cls : '') + '" src="' + ART[n] + '" alt="" aria-hidden="true">' : '';
 
   // ---------- acesso por caminho ----------
   const get = (o, p) => p.split('.').reduce((a, k) => (a === undefined || a === null ? undefined : a[k]), o);
@@ -182,7 +186,7 @@
     return '<div class="f s' + (o.span || 6) + (o.dec ? ' num' : '') + miss + '"><label for="' + id + '">' + label + '</label>' + ctl + (o.hint ? '<small>' + o.hint + '</small>' : '') + '</div>';
   }
   const card = (title, sub, body) => '<section class="card"><h3>' + title + '</h3>' + (sub ? '<div class="sub">' + sub + '</div>' : '') + body + '</section>';
-  const head = (t, lead) => '<h2>' + t + '</h2><p class="lead">' + lead + '</p>';
+  const head = (t, lead) => '<div class="ph">' + art(ARTV[view]) + '<div><h2>' + t + '</h2><p class="lead">' + lead + '</p></div></div>';
   const GEN = [['o', 'Masculino (o, do, no)'], ['a', 'Feminino (a, da, na)']];
 
   // ---------- seções ----------
@@ -214,11 +218,11 @@
     // quadro de controle: quantos laudos em cada situação e quanto falta receber; cada linha abre Meus laudos já filtrado
     const cnt = (f, k) => rep.filter(x => f(x) === k).length, totRec = rep.reduce((t, x) => t + aReceber(x), 0);
     const linha = (kind, k, l, n) => '<button class="ctl-row" data-action="filtro:' + kind + ':' + k + '"' + (n ? '' : ' disabled') + '>' + (kind === 'st' ? statusPill(k) : pagtoPill(k)) + '<b>' + n + '</b></button>';
-    const controle = '<section class="card ctl"><h3>Controle dos laudos</h3>' +
+    const controle = '<section class="card ctl"><h3>' + art('concluido') + 'Controle dos laudos</h3>' +
       '<div class="ctl-g"><div class="lab">Situação</div>' + STATUS.map(([k, l]) => linha('st', k, l, cnt(stOf, k))).join('') + '</div>' +
       '<div class="ctl-g"><div class="lab">Pagamento</div>' + PAGTO.map(([k, l]) => linha('pg', k, l, cnt(pgOf, k))).join('') + '</div>' +
       '<div class="ctl-tot"><span>A receber</span><b>' + reais(totRec) + '</b></div></section>';
-    const sc = (cls, act, icon, t, sub) => '<button class="short' + cls + '" ' + act + '>' + ic(icon) + '<b>' + t + '</b><span>' + sub + '</span></button>';
+    const sc = (cls, act, icon, t, sub) => '<button class="short' + cls + '" ' + act + '>' + (art({ newdoc: 'novo', upload: 'importar', folder: 'laudos', drop: 'poco', down: 'gerar' }[icon]) || ic(icon)) + '<b>' + t + '</b><span>' + sub + '</span></button>';
     return '<div class="hero"><img class="scene" src="@@IMG_BANNER@@" alt=""><div class="ht"><img class="lg" src="@@IMG_LOGO@@" alt=""><div><div class="hn">WILTON ROCHA</div><div class="hs"><i></i>HIDROGEOLOGIA<i></i></div><div class="hi">Laudos de outorga, do teste ao relatório</div></div></div></div>' +
       '<div class="wrap"><div class="shorts">' +
       sc(' pri', 'data-action="novo"', 'newdoc', 'Novo laudo', 'Começar um relatório') + sc('', 'data-action="importar"', 'upload', 'Importar teste', 'Ficha em PDF ou leituras') + sc('', 'data-go="consultas"', 'folder', 'Meus laudos', 'Pastas por cliente') +
@@ -667,7 +671,7 @@
   }
   function renderNav() {
     const r = R(), pend = pending(r), by = {}; pend.forEach(p => by[p.s] = (by[p.s] || 0) + 1);
-    const btn = (id, label, icon, badge) => '<button class="navbtn" data-go="' + id + '"' + (view === id ? ' aria-current="page"' : '') + '>' + ic(icon) + '<span class="lbl">' + label + '</span>' + (badge || '') + '</button>';
+    const btn = (id, label, icon, badge) => '<button class="navbtn" data-go="' + id + '"' + (view === id ? ' aria-current="page"' : '') + '>' + (id === 'inicio' ? ic(icon) : art(ARTV[id], 'mini') || ic(icon)) + '<span class="lbl">' + label + '</span>' + (badge || '') + '</button>';
     $('#navlist').innerHTML = btn('inicio', 'Início', 'home') + '<div class="grp">Consultas</div>' + btn('consultas', 'Meus laudos', 'folder', '<span class="badge n">' + store.reports.length + '</span>') + btn('apoio', 'Tabelas de apoio', 'book') + btn('config', 'Configurações', 'gear') +
       '<div class="grp">Laudo em edição</div><div class="cur">' + esc(r.nome || 'Novo laudo') + '</div>' +
       SECTIONS.map(s => btn(s.id, s.label, s.icon, ['textos', 'gerar'].includes(s.id) ? '' : (by[s.id] ? '<span class="badge" title="campos em branco">' + by[s.id] + '</span>' : '<span class="badge ok" title="completo">✓</span>'))).join('');

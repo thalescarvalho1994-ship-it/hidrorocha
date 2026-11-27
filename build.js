@@ -10,6 +10,11 @@ sub('@@PDFLIB@@', safe(R('node_modules/pdf-lib/dist/pdf-lib.min.js')));
 sub('@@PDFJS@@', safe(R('node_modules/pdfjs-dist/legacy/build/pdf.min.js')));
 sub('@@PDFJSWORKER@@', safe(R('node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js')));
 sub('@@JS@@', safe(['calc.js', 'teste.js', 'report.js', 'docx.js', 'pdf.js', 'ui.js'].map(f => R('src/' + f)).join('\n')));
+// ícones ilustrados recortados por cortar_icones.js
+const icones = {};
+fs.readdirSync(path.join(__dirname, 'assets', 'icones')).filter(f => /^[a-z]+\.webp$/.test(f))
+  .forEach(f => icones[f.replace('.webp', '')] = 'data:image/webp;base64,' + fs.readFileSync(path.join(__dirname, 'assets', 'icones', f)).toString('base64'));
+sub('/*@@ICONES*/{}', JSON.stringify(icones));
 for (const [k, f] of [['IMG_SIDEBAR', 'sidebar'], ['IMG_STRIP', 'strip'], ['IMG_LOGO', 'logo'], ['IMG_BANNER', 'banner']])
   sub('@@' + k + '@@', 'data:image/webp;base64,' + fs.readFileSync(path.join(__dirname, 'assets', f + '.webp')).toString('base64'));
 fs.mkdirSync(path.join(__dirname, 'out'), { recursive: true });
