@@ -31,11 +31,11 @@
     { k: 'expl1', grupo: '3. Hidrogeologia', label: 'Condições de explotação (aquífero)', def:
       'Na área {{do_local}}, onde está situado o poço tubular profundo, em função dos dados dos perfis litológicos dos poços da região foi estimado que {{aquifero}} sob o ponto de vista hidrogeológico se apresenta como um aquífero {{comportamento}}.' },
     { k: 'teste1', grupo: '3. Hidrogeologia', label: 'Teste de bombeamento', def:
-      'Foi realizado em {{dataTesteBR}}, um teste de bombeamento escalonado de {{nEtapasExt}} etapas, sendo utilizada para tal fim uma bomba submersa {{bomba}}, com duração de {{duracao}} horas/etapa, cujos dados estão apresentados nas fichas de Ensaio de Bombeamento escalonado, anexa ao processo.' },
+      'Foi realizado em {{dataTesteBR}}, {{tipoTeste}}, sendo utilizada para tal fim uma bomba submersa {{bomba}}, com duração de {{duracao}} {{horasEtapa}}, cujos dados estão apresentados nas fichas de Ensaio de Bombeamento{{escalonadoFim}}, anexa ao processo.' },
     { k: 'teste2', grupo: '3. Hidrogeologia', label: 'Análise do ensaio', def:
-      'O ensaio de bombeamento escalonado foi analisado com o objetivo definir a capacidade máxima permissível e vazão de explotação, que atenda a demanda {{do_local}}, objeto do pedido de outorga, que pode ser resumido no Quadro 01.' },
+      'O ensaio de bombeamento {{escalonado}}foi analisado com o objetivo definir a capacidade máxima permissível e vazão de explotação, que atenda a demanda {{do_local}}, objeto do pedido de outorga, que pode ser resumido no Quadro 01.' },
     { k: 'teste3', grupo: '3. Hidrogeologia', label: 'Parâmetros hidrodinâmicos', def:
-      'Com os dados de rebaixamento medidos durante o teste de bombeamento escalonado, foi possível avaliar utilizando o programa {{programa}} os parâmetros hidrodinâmicos: coeficiente de transmissividade (T) e condutividade hidráulica (K), considerando uma espessura saturada de {{espessura}} metros para o {{aquifero}}, cujos resultados estão no Quadro 02.' },
+      'Com os dados de rebaixamento medidos durante o teste de bombeamento{{escalonadoFim}}, foi possível avaliar utilizando o programa {{programa}} os parâmetros hidrodinâmicos: coeficiente de transmissividade (T) e condutividade hidráulica (K), considerando uma espessura saturada de {{espessura}} metros para o {{aquifero}}, cujos resultados estão no Quadro 02.' },
     { k: 'expl2', grupo: '3. Hidrogeologia', label: 'Critérios de explotação', def:
       'As condições de explotação do poço tubular {{poco}} {{do_local}} foram determinadas levando em consideração:\n- Vazão Máxima Permissível pelo Filtro;\n- Vazão Máxima Permissível pelo Furo;\n- Vazão Máxima Possível e de Explotação.' },
     { k: 'expl3', grupo: '3. Hidrogeologia', label: 'Filtro e furo não avaliados', def:
@@ -173,6 +173,10 @@
       lat: coord(r.loc.latG, r.loc.latM, r.loc.latS), lon: coord(r.loc.lonG, r.loc.lonM, r.loc.lonS), latHem: r.loc.latHem, lonHem: r.loc.lonHem,
       aquifero: r.teste.aquifero, comportamento: r.geo.comportamento, espessura: r.teste.espessura, programa: r.teste.programa,
       bomba: r.teste.bomba, duracao: r.teste.duracao, nEtapasExt: NUM_EXT[r.teste.etapas.length] || String(r.teste.etapas.length),
+      // teste de etapa única (vazão constante) x escalonado
+      tipoTeste: r.teste.etapas.length > 1 ? 'um teste de bombeamento escalonado de ' + (NUM_EXT[r.teste.etapas.length] || r.teste.etapas.length) + ' etapas' : 'um teste de bombeamento de vazão constante em etapa única',
+      horasEtapa: r.teste.etapas.length > 1 ? 'horas/etapa' : 'horas',
+      escalonado: r.teste.etapas.length > 1 ? 'escalonado ' : '', escalonadoFim: r.teste.etapas.length > 1 ? ' escalonado' : '',
       usos: r.dem.usos, raioCadastro: rc,
       cadastroFrase: nPocos === 0
         ? 'Não foram cadastrados poços na periferia ' + aL.do + ' ' + g.local + ' dentro de um raio de ' + rc + ' metros.'

@@ -70,6 +70,34 @@
     return { meta, etapas: ps.map(p => ({ etapa: p.etapa, NE: p.NE !== null ? p.NE : meta.NE, ND: p.ND, Q: p.Q, tempo: p.tempo, pts: p.pts.map(x => [x.t, x.nd]) })) };
   }
 
+  // ---------- leituras digitadas ou coladas (fichas escaneadas, como a da WX Poços) ----------
+  // Uma leitura por linha: tempo, ND e (opcional) vazão. Tempo em minutos ou h:mm ("4:15" = 255 min).
+  // Linha com "etapa" começa uma nova etapa. Vazão em L/h aceita milhar com ponto ("2.500" = 2500).
+  function numMil(s) { s = String(s || '').trim(); return /^\d{1,3}(\.\d{3})+$/.test(s) ? Number(s.replace(/\./g, '')) : num(s); }
+  function tempoMin(s) {
+    const p = String(s).trim().split(':'); if (p.length === 1) return num(p[0]);
+    const v = p.map(Number); if (v.some(x => !isFinite(x))) return null;
+    return p.length === 2 ? v[0] * 60 + v[1] : v[0] * 60 + v[1] + v[2] / 60;
+  }
+  function parseLeituras(text, o) { // o: { NE, Q, unidade: 'm3h' | 'Lh' }
+    const fq = o.unidade === 'Lh' ? 1 / 1000 : 1, ets = [];
+    let cur = null;
+    const novo = () => { cur = { etapa: ets.length + 1, NE: o.NE, ND: null, Q: o.Q !== null && o.Q !== undefined ? o.Q * fq : null, pts: [] }; ets.push(cur); };
+    String(text || '').replace(/\r/g, '').split('\n').forEach(l => {
+      if (/etapa/i.test(l)) { novo(); return; }
+      const tk = l.trim().split(/[\t;]+|\s+/).filter(Boolean); if (tk.length < 2) return;
+      const t = tempoMin(tk[0]), nd = num(tk[1]), q = tk[2] !== undefined ? numMil(tk[2]) : null;
+      if (!(t > 0) || nd === null) return;
+      if (!cur) novo();
+      cur.pts.push([t, nd]); cur.ND = nd;
+      if (q) cur.Q = q * fq;
+    });
+    const ok = ets.filter(e => e.pts.length);
+    if (!ok.length) return null;
+    ok.forEach((e, i) => { e.etapa = i + 1; e.pts.sort((a, b) => a[0] - b[0]); });
+    return { meta: { NE: o.NE }, etapas: ok };
+  }
+
   // ---------- funções de poço ----------
   // W(u) de Theis = E1(u)
   function W(u) {
@@ -158,5 +186,5 @@
     return rows.map(r => r.items.sort((a, b) => a.x - b.x).map(i => i.s.trim()).join(' ').replace(/\s+/g, ' '));
   }
 
-  Object.assign(HL, { parseFicha, analisarTeste, pdfLines, theisW: W, hantushW: Wh });
+  Object.assign(HL, { parseFicha, parseLeituras, numMil, analisarTeste, pdfLines, theisW: W, hantushW: Wh });
 })(typeof globalThis !== 'undefined' ? globalThis : window);

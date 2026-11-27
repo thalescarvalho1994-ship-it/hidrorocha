@@ -7,6 +7,7 @@ Uso alvo: **notebook/desktop**. O usuário fala português; interface, textos e 
 ## Estado atual (rodada 2 de melhorias, nov/2026)
 - Abas: Início, Meus laudos (pastas por cliente), Tabelas de apoio, Configurações, Dados gerais, Localização, Poço e teste, Geologia, Cálculos, Demanda e interferência, Vulnerabilidade, Qualidade da água, Textos-base, Gerar relatório. Painel "Resumo ao vivo" à direita.
 - **Importar ficha do teste** (aba Poço e teste / atalho no Início): PDF da GEOTECH lido com pdf.js (`src/teste.js` `pdfLines` + `parseFicha`), análise por etapa (Jacob, Theis, Hantush, `analisarTeste`), tela de conferência com caixas de seleção antes de aplicar. Também aceita .txt/.csv.
+- **Fichas escaneadas** (foto, ex.: WX Poços, poço MBR-05): caixa "Digite ou cole as leituras" na importação (`HL.parseLeituras`): tempo em min ou h:mm, ND, vazão opcional; L/h com milhar ("2.500"); "Etapa N" separa etapas. Sem OCR de propósito (erro em tabela escaneada estraga o laudo). Teste de etapa única ajusta os textos (`tipoTeste`, `escalonado`).
 - **Ctrl+V** de tabelas (Quadro 01, coluna T do Quadro 02, litoestratigrafia, campos em sequência) e de coordenadas inteiras (`09°35'05,58"S 35°45'52,94"W`).
 - Quadro 02: K = T ÷ espessura (automático), média por método e **média geral = média das médias** (confere com JCC-01). Sem dado = célula em branco.
 - Tabelas do laudo com células mescladas (`HL.tableGrid`, `headRows` para cabeçalho de 2 linhas, `shade` para célula cinza), iguais na prévia, no Word e no PDF; tabelas não se dividem entre páginas.

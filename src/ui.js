@@ -268,6 +268,13 @@
       return head('Poço e teste de bombeamento', 'Construção do poço e os resultados do teste escalonado (Quadros 01 e 02 do laudo).') +
         '<section class="card" id="cardImp"><h3>' + ic('down') + ' Importar ficha do teste de bombeamento</h3><div class="sub">Envie o PDF da ficha (modelo GEOTECH). O app lê o cabeçalho e as leituras de cada etapa, preenche o laudo e calcula T por Jacob, Theis e Hantush. Você confere antes de aplicar.</div>' +
         '<label class="drop" for="upTeste" id="dropTeste">' + ic('file') + '<b>Arraste o PDF aqui ou clique para escolher</b><span>Aceita .pdf (ficha com texto) e .txt/.csv com as mesmas colunas</span></label><input id="upTeste" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain" hidden>' +
+        '<details class="manual"><summary>Ficha escaneada (foto) ou de outra empresa? Digite ou cole as leituras</summary>' +
+        '<p class="note">Uma leitura por linha: <b>tempo</b> e <b>nível dinâmico</b>, e, se quiser, a <b>vazão</b> na terceira coluna. O tempo pode ser em minutos (30) ou em h:mm (4:15 = 4 h 15 min). Para teste escalonado, escreva “Etapa 2” numa linha antes das leituras da 2ª etapa. Dá para colar direto do Excel.</p>' +
+        '<div class="grid"><div class="f s3 num"><label for="mNE">Nível estático NE (m)</label><input id="mNE" inputmode="decimal" placeholder="2,00"></div>' +
+        '<div class="f s3 num"><label for="mQ">Vazão do teste</label><input id="mQ" inputmode="decimal" placeholder="2.500"></div>' +
+        '<div class="f s3"><label for="mUn">Unidade da vazão</label><select id="mUn"><option value="m3h">m³/h</option><option value="Lh">L/h (litros por hora)</option></select></div>' +
+        '<div class="f s12"><label for="mTxt">Leituras (tempo · ND · vazão opcional)</label><textarea id="mTxt" rows="7" placeholder="0:01  2,29\n0:02  2,36\n0:30  2,59  2.500\n24:00  2,66"></textarea></div></div>' +
+        '<div class="row" style="margin-top:10px"><button class="btn" data-action="impManual">' + ic('calc') + 'Ler e calcular</button></div></details>' +
         (imp ? impHtml() : '') + '</section>' +
         (!imp && r.teste.dados && r.teste.dados.etapas ? card('Curvas do teste de bombeamento', 'Leituras da ficha importada. Passe o mouse nos pontos para ver os valores.', chartTeste(r.teste.dados, HL.analisarTeste(r.teste.dados))) : '') +
         card('Construção do poço', null, '<div class="grid">' + fld('poco.profUtil', 'Profundidade útil', { span: 3, dec: 1, suf: 'm' }) + fld('poco.diametro', 'Diâmetro', { span: 3 }) + fld('poco.revestimento', 'Revestimento (tubos e filtros)', { span: 6 }) +
@@ -728,6 +735,14 @@
       case 'impApply': applyImport(r); break;
       case 'impNew': { const n = newReport(); n.pasta = r.pasta || ''; store.reports.unshift(n); applyImport(n); break; }
       case 'impCancel': imp = null; render(); break;
+      case 'impManual': {
+        const NE = num($('#mNE').value), Q = HL.numMil($('#mQ').value);
+        if (NE === null) { toast('Informe o nível estático (NE).', true); break; }
+        const f = HL.parseLeituras($('#mTxt').value, { NE, Q, unidade: $('#mUn').value });
+        if (!f) { toast('Não encontrei leituras. Use uma por linha: tempo e nível dinâmico.', true); break; }
+        if (f.etapas.some(e => !e.Q)) { toast('Informe a vazão do teste (no campo ou na 3ª coluna).', true); break; }
+        imp = buildImport(f, 'leituras digitadas'); render(); const ci = $('#cardImp'); if (ci) ci.scrollIntoView({ block: 'start' }); break;
+      }
       case 'importar': go('poco'); setTimeout(() => { const u = $('#upTeste'); if (u) u.click(); }, 60); break;
       case 'backupDir': await backupChoose(); break;
       case 'backupRecon': await backupReconnect(); break;
