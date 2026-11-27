@@ -26,8 +26,11 @@ fs.writeFileSync(path.join(__dirname, '..', 'Wilton Rocha - Laudos.html'), html)
 const pac = path.join(__dirname, 'out', 'Instalar Wilton Rocha - Laudos');
 fs.mkdirSync(pac, { recursive: true });
 fs.writeFileSync(path.join(pac, 'Wilton Rocha - Laudos.html'), html);
-fs.copyFileSync(path.join(__dirname, 'assets', 'app.ico'), path.join(pac, 'app.ico'));
-['Instalar.bat', 'instalar.ps1'].forEach(f => fs.copyFileSync(path.join(__dirname, 'instalador', f), path.join(pac, f)));
+fs.rmSync(path.join(pac, 'app.ico'), { force: true });
+fs.copyFileSync(path.join(__dirname, 'assets', 'app.ico'), path.join(pac, 'Wilton Rocha Laudos.ico'));
+fs.copyFileSync(path.join(__dirname, 'instalador', 'Instalar.bat'), path.join(pac, 'Instalar.bat'));
+// PowerShell 5 só lê acentos em UTF-8 se houver BOM
+fs.writeFileSync(path.join(pac, 'instalar.ps1'), '﻿' + R('instalador/instalar.ps1').replace(/^﻿/, ''));
 const zip = path.join(__dirname, '..', 'Instalar Wilton Rocha - Laudos.zip');
 require('child_process').execFileSync('powershell', ['-NoProfile', '-Command', `Compress-Archive -Path '${pac}' -DestinationPath '${zip}' -Force`]);
 console.log(html.length, 'bytes; pacote:', zip);
