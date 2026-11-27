@@ -1,0 +1,117 @@
+0|Normal|CENTRO EDUCACIONAL MADRE VALDELÍCIA MARTINS  <<HL: ['CENTRO EDUCACIONAL MADRE VALDELÍCIA MARTINS']
+1|Normal|DA SILVA  <<HL: ['DA SILVA']
+3|Normal|COLÉGIO MADRE VALDELÍCIA  <<HL: ['COLÉGIO MADRE VALDELÍCIA']
+9|Normal|Solicitação de Outorga de Direito de Uso de Recursos Hídricos
+14|Normal|L A U D O    H I D R O G E O L Ó G I C O
+16|Normal|Poço CMV-01  <<HL: ['CMV-01']
+30|Normal|Maceió-AL
+31|Normal|Agosto-2026  <<HL: ['Agosto-2026']
+32|Normal|1.0	INTRODUÇÃO
+33|Normal|Esse relatório tem como finalidade a obtenção da Outorga de Direito de Uso de Recursos Hídricos, captada por meio de um poço tubular profundo em conformidade co
+34|Normal|A Outorga de Direito de Uso de Recursos Hídricos é ato administrativo, mediante o qual o poder outorgante faculta ao outorgado o direito de uso de recursos hídr
+35|Normal|No presente relatório é apresentado os resultados obtidos com a avaliação do relatório técnico do teste de vazão escalonado do poço tubular, para pedido de Outo  <<HL: ['no Colégio Madre Valdelícia, município de Maceió-AL e necessita explotar ', '6m', '3', '/h', ' ou ', '72m', '3', '/dia', ' em regime de bombeamento de ', '12horas/dia', ', no uso para ', 'Abastecimento Humano', ' e ', 'Outras finalidades']
+36|Normal|O poço tubular CMV-01 foi testado em junho de 2026 pela GEOTECH, com sede em Maceió-AL, tendo uma profundidade útil de 80,00 metros e revestido como tubos e fil  <<HL: ['CMV-01', 'junho de 2026', 'GEOTECH', 'Maceió-AL', '80,00', '4']
+37|Normal|O presente relatório está registrado no CREA-AL pela ART – Anotação de Responsabilidade Técnica de n.º AL20260563078, anexa ao processo.  <<HL: ['AL20260563078']
+38|Normal|2.0	LOCALIZAÇÃO E VIAS DE ACESSO
+39|Normal|O Colégio Madre Valdelícia está situado na Rua C-05, nº 275, Quadra C-3, bairro Benedito Bentes, município de Maceió-AL (Figura 01).  <<HL: ['Colégio Madre Valdelícia ', 'está situado na ', 'Rua C-05, nº 275, Quadra C-3, bairro Benedito Bentes', ', ', 'município de Maceió-AL']
+40|Normal|O acesso ao Colégio Madre Valdelícia pode ser feito a partir do bairro Guaxuma pela Avenida Rota do Mar e/ou a partir do bairro Benedito Bentes pela Avenida Cac  <<HL: ['O acesso ao Colégio Madre Valdelícia pode ser feito a partir do bairro Guaxuma pela Avenida Rota do Mar e/ou a partir do bairro Benedito Bentes pela Avenida Cachoeira do Meirim e Avenida Benedito Bentes, até a Rua C-3, onde está o Colégio Madre Valdelícia (Figura 01 e 02).']
+41|Normal|Figura 01 – Mapa de localização do Colégio Madre Valdelícia.  <<HL: ['Mapa de localização do Colégio Madre Valdelícia']
+46|Normal|Figura 02 – Mapa de localização do Colégio Madre Valdelícia e Vias de Acesso.  <<HL: ['Mapa de localização do ', 'Colégio Madre Valdelícia ', 'e Vias de Acesso.']
+47|Normal|O poço tubular CMV-01 está situado em área de propriedade do Centro Educacional Madre Valdelícia Martins da Silva (Colégio Madre Valdelícia), georreferenciado p  <<HL: ['CMV-01', 'Centro Educacional Madre Valdelícia Martins da Silva (', 'Colégio Madre Valdelícia)', ',', '09', 'o', ' 35’ 05,58”', '35', 'o', ' 45’ 52,94”']
+49|Normal|Figura 03 – Mapa de localização do poço tubular CMV-01 em relação aoà Colégio Madre Valdelícia.  <<HL: ['CMV-01 em relação aoà ', 'Colégio Madre Valdelícia.']
+50|Normal|3.0	HIDROGEOLOGIA
+51|Normal|3.1	Considerações Gerais
+52|Body Text|Com base no Mapa de Recursos Minerais do Estado de Alagoas, na escala de 1:250.000, publicado pelo Programa Geologia do Brasil-PGB (CPRM/2015), o poço tubular p  <<HL: ['CMV-01', 'Terciários do Grupo Barreiras (ENb). Localmente esses sedimentos estão sobrepostos as rochas sedimentares da Formação Marituba (K1mrt)']
+54|Normal|Figura 04 – Esboço geológico com indicação do poço tubular CMV-01 do Colégio Madre Valdelícia.
+55|Body Text|De maneira simplificada pode-se apresentar para esta região, a provável litoestratigrafia da área.
+56|Body Text|Não existe relatório técnico com dados do perfil litológico do poço, com base na descrição dos poços existentes na região, o Poço CMV-01 esta situado numa sequê  <<HL: ['Não existe relatório técnico com dados do perfil litológico do poço', 'CMV-01']
+57|Body Text|A recarga dos sistemas aquíferos na área de estudo ocorre principalmente, pela infiltração direta das águas de chuva.
+58|Body Text|Os exutórios naturais dos aquíferos na região são as fontes, drenagem e Oceano Atlântico, enquanto o artificial é representado pela explotação dos poços.
+59|Body Text|Uma parte da recarga anual dos aquíferos é drenada para os exutórios naturais, enquanto outra parte e drenada para os artificiais.
+60|Normal|Cadastro de Poços
+61|Normal|O cadastro teve como objetivo à localização desses poços na área, para com base na definição da vazão de explotação avaliar as possíveis interferências que poss  <<HL: ['Colégio Madre Valdelícia']
+62|Normal|Condições de Explotação
+63|Body Text|Na área do Colégio Madre Valdelícia, onde está situado o poço tubular profundo, em função dos dados dos perfis litológicos dos poços da região foi estimado que   <<HL: ['Colégio Madre Valdelícia', 'Aquífero Barreiras', 'aquífero semi-confinado a livre.']
+64|Body Text|Foi realizado em 23.06.2026, um teste de bombeamento escalonado de três etapas, sendo utilizada para tal fim uma bomba submersa marca Hidrax modelo SDX100 de 1.  <<HL: ['23.06.2026', 'escalonado de três etapas', 'Hidrax modelo SDX100 de 1.0 CV-380V-Trifásica', '02:00 horas/etapa']
+65|Body Text|O ensaio de bombeamento escalonado foi analisado com o objetivo definir a capacidade máxima permissível e vazão de explotação, que atenda a demanda do Colégio M
+66|Normal|Quadro 01 – Resumo dos parâmetros hidrogeológicos do teste de bombeamento escalonado.
+67|Normal|Com os dados de rebaixamento medidos durante o teste de bombeamento escalonado, foi possível avaliar utilizando o programa GWW (ONU, 1995) os parâmetros hidrodi  <<HL: ['uma espessura saturada de 12,5 metros para o Aquífero Barreiras']
+68|Normal|Quadro 02 – Parâmetros hidrodinâmicos do poço tubular CMV-01 do Colégio Madre Valdelícia.  <<HL: ['CMV-01 do Colégio Madre Valdelícia.']
+69|Normal|As condições de explotação do poço tubular CMV-01 do Colégio Madre Valdelícia foram determinadas levando em consideração:  <<HL: ['CMV-01 do Colégio Madre Valdelícia']
+70|Normal|- Vazão Máxima Permissível pelo Filtro;
+71|Normal|- Vazão Máxima Permissível pelo Furo;
+72|Normal|- Vazão Máxima Possível e de Explotação.
+73|Normal|A Vazão Máxima Permissível pelo Furo e Vazão Máxima Permissível pelo Furo, em função da inexistência dos dados do perfil construtivo e litológico, deixam de ser  <<HL: ['em função da inexistência dos dados do perfil construtivo e litológico']
+74|Normal|Vazão Máxima Possível (Qmpo) e de Explotação (Qexp)
+75|Normal|A vazão máxima possível é determinada em função do rebaixamento disponível. Para efeito de cálculo o rebaixamento disponível é considerado como sendo o máximo q
+76|Normal|Rd = PB – SB –NE – VS – I,							(1)
+77|Normal|Onde:
+78|Normal|PB	profundidade da bomba			= 56,00m;  <<HL: ['56,00m']
+79|Normal|SB	submergência da bomba			=   0,00m;  <<HL: ['=   0,00m;']
+80|Normal|NE	nível estático					= 53,50m;  <<HL: ['53,50m;']
+81|Normal|VS	variação sazonal				=   1,00m;
+82|Normal|I		interferência de outros poços na área		=   1,00m.
+83|Normal|Efetuando as substituições na equação acima, temos um rebaixamento disponível de 0,5 metros.
+84|Normal|Qmpo = T.sw/0,183[log{2,25.T.t/rp2.S}]						(2)
+85|Normal|Onde:
+86|Normal|T	(transmissividade (m2/seg)					=   9,208 x 10-4;  <<HL: ['=   9,208 x 10', '-4', ';']
+87|Normal|Sw 	( rebaixamento disponível (m)				=   0,50;  <<HL: ['0,50;']
+88|Normal|T	(tempo de bombeamento (seg)				= 43.200;  <<HL: ['43.200;']
+89|Normal|rp	(raio do da seção filtrante (m)				= 0,051;  <<HL: ['0,051']
+90|Normal|S		(coeficiente de Armazenamento (adimensional)		= 0,0004.
+91|Normal|A vazão máxima possível (Qmp) obtida é de 1,24m3/h.
+92|Body Text|Vazão de Explotação
+93|Body Text|Com os dados do Quadro 1, se obtém os valores de n, B e C, onde a equação característica do poço é dada por:
+94|Body Text|Sw = BQ + CQn 									(3)
+95|Body Text|Onde,
+96|Body Text|BQ	 mostra as perdas de carga no aquífero;
+97|Body Text|CQn	 mostra as perdas de carga devido a construção do poço.
+98|Body Text|A equação característica do poço para uma eficiência de 84,7%, obtida por meio de um gráfico é:
+99|Body Text|Sw = 0,1379.Q + 0,005628.Q2								(4)  <<HL: ['Sw = 0,1379.Q + 0,005628.Q', '2']
+100|Body Text|Em função do exposto acima, as condições de explotação do poço para uma vazão de 6m3/h são as seguintes:  <<HL: ['6m', '3', '/h']
+101|Body Text|Profundidade do poço					 P	= 66,00m;  <<HL: ['66,00m;']
+102|Body Text|Nível estático						NE	= 53,50m;  <<HL: ['53,50m;']
+103|Body Text|Nível dinâmico						ND	= 54,53m;  <<HL: ['54,53m;']
+104|Body Text|Rebaixamento						Sw	=   1,03m;  <<HL: ['1,03m;']
+105|Body Text|Vazão de explotação					 Q	=   6,00m;  <<HL: ['6,00m;']
+106|Body Text|Capacidade Específica					 q	=   5,825(m3/h)/m;  <<HL: ['5,825(m', '3', '/h)/m;']
+107|Body Text|Posição da bomba (crivo)				PC	= 56,00m.  <<HL: ['56,00m.']
+109|Body Text|3.4	Justificativa da Demanda
+110|Body Text|O Colégio Madre Valdelícia utiliza água subterrânea captada de poço tubular CMV-01 para fins de uso para Consumo Humano e Outras Finalidades, totalizando uma de  <<HL: ['Colégio Madre Valdelícia', 'CMV-01', 'Consumo', 'Humano', ' e ', 'Outras Finalidades', '72m', '3', '/dia', '6m', '3', '/dia', '12:00 horas']
+111|Body Text|Para o cálculo do volume da demanda do Colégio Madre Valdelícia, no que diz respeito ao abastecimento humano e uso doméstico de 274 colaboradores, uso de 8 banh  <<HL: ['Colégio Madre Valdelícia', 'abastecimento humano e uso doméstico de 274 colaboradores, uso de 8 banheiros para funcionários e alunos, lavagem de áreas comuns e piscina']
+112|Body Text|3.5	Cálculo das interferências
+113|Body Text|Com base nos parâmetros indicado para o Aquífero Barreiras e em função da inexistência (não foram cadastrados) de poços num raio de 500 metros, foi utilizado o   <<HL: ['CMV-01 do Colégio Madre Valdelícia']
+114|Body Text|No Quadro 03 estão apresentados os rebaixamentos provocados para diferentes raios de interferência, para uma vazão de explotação de 6m3/h num regime de bombeame  <<HL: ['6m', '3', '/h num regime de bombeamento de 12h/dia.']
+115|Normal|Quadro 03 – Interferência nos poços e raio máximo na área provocada pelo bombeamento do poço tubular CMV-01 do Colégio Madre Valdelícia.  <<HL: ['CMV-01 do Colégio Madre Valdelícia.']
+116|Normal|3.6	Vulnerabilidade dos Aquíferos
+117|Normal|O conceito de vulnerabilidade de aquíferos aplicado à contaminação antrópica é seguramente uma das formas mais adequadas de se encarar a preservação da qualidad
+118|Normal|GOD é um dos mais simples métodos para definição da vulnerabilidade de aqüíferos. Foi desenvolvido para analisar apenas a susceptibilidade das águas subterrânea
+119|Normal|O Índice de Vulnerabilidade do Aquífero por meio do Método GOD (Foster 1987 e Foster & Hirata 1993) é definido pela interação, por meio de multiplicação de 3 pa
+120|Normal|Parâmetros de Entrada:
+121|Normal|- Tipo de Aquífero (G)
+122|Normal|Surgente, Confinado, Semiconfinado, Livre (coberto) e Livre (aflorante).
+123|Normal|- Litologia da zona não saturada (O)
+124|Normal|Grau de consolidação e caráter litológico.
+125|Normal|- Distância da água (D)
+126|Normal|Nível estático para aquífero livre e topo do aquífero confinado.
+127|Normal|Parâmetros de saída:
+128|Normal|A cada um desses parâmetros de entrada é atribuído um valor cujo Índice Qualitativo indica o grau de vulnerabilidade, que pode ser:
+129|Normal|Nulo, Baixo, Moderado, Alto e Extremo.
+130|Normal|A partir dos dados do nível estático do teste de bombeamento do poço e das informações estimada do Aquífero Barreiras na área, com base na metodologia GOD, o po  <<HL: ['CMV-01 do Colégio Madre Valdelícia', 'BAIXA', '0,22']
+137|Normal|Quadro 04 – Vulnerabilidade natural na área do poço tubular CMV-01 do Colégio Madre Valdelícia .  <<HL: ['CMV-01 do Colégio Madre Valdelícia .']
+138|Normal|4.0	QUALIDADE DA ÁGUA
+139|Normal|Conforme Certificado n° 4822/2026-B conforme Relatório de Análise anexo ao processo, da análise físico-química e bacteriológica da amostra n° 5011 de 21.07.2026  <<HL: ['Certificado n° 4822/2026-B conforme Relatório de Análise anexo ao processo, da análise físico-química e bacteriológica da amostra n° 5011 de 21.07.2026, realizada pela Central Analítica, com sede em Maceió-AL,', 'CMV-01 do Colégio Madre Valdelícia', 'Ferro Total, Cor e Turbidez']
+140|Normal|5.0	CONCLUSOES
+141|Recuo de corpo de texto 2|Com base na avaliação hidrogeológica da área e dos parâmetros hdirodinâmicos do poço construído em área do Colégio Madre Valdelícia, podemos estabelecer as segu  <<HL: ['Colégio Madre Valdelícia']
+142|Recuo de corpo de texto 2|- a avaliação da vazão de explotação do poço tubular CMV-01 permite explotar 6m3/h em regime de bombeamento de 12h/dia, sem comprometimento na área do Aquífero   <<HL: ['CMV-01 permite explotar 6m', '3', '/h em regime de bombeamento de 12h/dia']
+143|Recuo de corpo de texto 2|- os rebaixamentos calculados para possíveis poços vizinhos num raio máximo de 481,31 metros, conforme Quadro 03, interfere em poços existentes dentro desse rai  <<HL: ['raio máximo de 481,31 metros']
+144|Recuo de corpo de texto 2|- do ponto de vista qualitativo a água sob o ponto de vista físico-químico e bacteriológico não atende todos os padrões de potabilidade;  <<HL: ['não atende todos os padrões de potabilidade']
+145|Normal|- pelo exposto nesse laudo, solicitamos a Outorga de Direito de Uso de Recursos Hídricos para explotação de 6m3/h do poço tubular profundo CMV-01 localizado no   <<HL: ['6m', '3', '/h do poço tubular profundo CMV-01 localizado no Colégio Madre Valdelícia,', 'CENTRO EDUCACIONAL MADRE VALDELÍCIA MARTINS DA SILVA,']
+147|Heading 8|Maceió, 20 de Agosto de 2026  <<HL: ['20 de Agosto de 2026']
+185|Normal|6.0	REFERÊNCIAS BIBLIOGRÁFICAS
+186|Normal|BRASIL 1975 Convênio PETROBRÁS/DNPM. Carta Geológica da Bacia Sergipe e Alagoas, folha SC.25-V-IV-2 (Maceió) na escala de 1:50.000.
+187|Normal|DONEZAR, M. 1975 Analisis y Evaluacion de los datos de Ensayos por Bombeo. Boletín 11s. Holanda. 213 p.
+188|Normal|FOSTER, S. & HIRATA, R.C. 1993 Determinação do Risco de Contaminação das Águas Subterrâneas: Um Método Baseado em Dados Existentes. São Paulo – Instituto Geológ
+189|Corpo de texto 2|FOSTER, S.; VENTURA, M. & HIRATA, R.C. 1987. Contaminacion de las aguas subterraneas: um enfoque ejecutivo de la situación em América Latina y el Caribe em rala
+190|Normal|MENDES, V.A.; LIMA, M.A.B.; MORAIS, D.M.F. de. 2013. Programa Geologia do Brasil-PGB. Geologia e Recursos Minerais do Estado de Alagoas. Mapa de Recursos Minera
+191|Corpo de texto 2|TOMAZ, P. 2000. Previsão de Consumo de Água – Interface das Instalações Prediais de Água e Esgoto com os Serviços Públicos. Editora Navegar. 251 p.
