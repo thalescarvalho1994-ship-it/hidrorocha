@@ -20,8 +20,9 @@ for (const [k, f] of [['IMG_SIDEBAR', 'sidebar'], ['IMG_STRIP', 'strip'], ['IMG_
 sub('@@IMG_FAVICON@@', 'data:image/png;base64,' + fs.readFileSync(path.join(__dirname, 'assets', 'favicon.png')).toString('base64'));
 fs.mkdirSync(path.join(__dirname, 'out'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, 'out', 'index.html'), html);
-// cópia para abrir com dois cliques na pasta de cima ("App Wilton")
-fs.writeFileSync(path.join(__dirname, '..', 'Wilton Rocha - Laudos.html'), html);
+// o app instalado (atalho com a logo) fica em %LOCALAPPDATA%\Wilton Rocha Laudos; o build atualiza essa cópia se existir
+const inst = path.join(process.env.LOCALAPPDATA || '', 'Wilton Rocha Laudos', 'Wilton Rocha - Laudos.html');
+if (process.env.LOCALAPPDATA && fs.existsSync(inst)) fs.writeFileSync(inst, html);
 // pacote para enviar ao Wilton: app + ícone + instalador que cria o atalho com a logo na área de trabalho
 const pac = path.join(__dirname, 'out', 'Instalar Wilton Rocha - Laudos');
 fs.mkdirSync(pac, { recursive: true });

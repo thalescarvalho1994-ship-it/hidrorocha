@@ -24,7 +24,7 @@ Uso alvo: **notebook/desktop**. O usuário fala português; interface, textos e 
 ## Estrutura
 - `shell.html` — esqueleto (placeholders `@@CSS@@`, `@@JS@@`, `@@PDFLIB@@`, `@@PDFJS@@`, `@@PDFJSWORKER@@`, `@@IMG_*@@`)
 - `src/calc.js` (cálculos), `teste.js` (ficha e análise do teste), `report.js` (textos + blocos + exemplo CMV-01 + `tableGrid`), `docx.js`, `pdf.js`, `ui.js` (telas), `ui.css`
-- `node build.js` → `out/index.html` (≈2,7 MB, tudo embutido, funciona sem internet) e cópia em `../Wilton Rocha - Laudos.html`.
+- `node build.js` → `out/index.html` (≈2,7 MB, tudo embutido, funciona sem internet) e o pacote `../Instalar Wilton Rocha - Laudos.zip` (instalador que cria o atalho com a logo; o build também atualiza o app já instalado em %LOCALAPPDATA%\Wilton Rocha Laudos).
 - Dependências (só para build/testes): `npm install` (pdf-lib 1.17.1, pdfjs-dist 3.11.174, playwright).
 - Testes: `node test_node.js` (cálculos conferidos com o JCC-01 + gera Word/PDF em out/), `node test_ficha.js "ficha.pdf"` (leitura e análise), `node e2e.js "ficha.pdf"` (navegador Edge via Playwright: importação, colar, pastas, downloads, persistência).
 - `in/estudo.doc|docx` — laudo CMV-01; `paras.txt` — parágrafos com os trechos amarelos. O modelo completo é o JCC-01 (PDF do usuário, fora da pasta).
